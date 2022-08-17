@@ -57,13 +57,15 @@ const Item: React.FC<IHistoricalDate> = ({ category1, date, description }) => (
 );
 
 const Home: NextPage = () => {
-  const { result, keyword, search } = useFuzzy<IHistoricalDate>(
-    historicalEvents,
-    {
-      keys: ["date", "description", "lang", "category1", "category2"],
-    }
-  );
-  console.log(result);
+  const {
+    result: rawResults,
+    keyword,
+    search,
+  } = useFuzzy<IHistoricalDate>(historicalEvents, {
+    keys: ["date", "description", "lang", "category1", "category2"],
+  });
+
+  const result = rawResults.map((e) => e.item || e);
 
   return (
     <Stack
@@ -104,7 +106,7 @@ const Home: NextPage = () => {
         mt={8}
       >
         <Heading letterSpacing="tight" mb={4} size="xl" fontWeight={700}>
-          All Posts
+          Filtered results
         </Heading>
         <ResultList data={result} />
       </Flex>
