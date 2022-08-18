@@ -1,9 +1,8 @@
 import React from "react";
 import { Box, Heading, Text, Stack } from "@chakra-ui/react";
-import Fuse from "fuse.js";
 import { IHistoricalDate } from "../types";
 
-const EventCard: React.FC<Fuse.FuseResult<IHistoricalDate>> = ({
+const EventCard: React.FC<{ item: IHistoricalDate; score?: number }> = ({
   item: { category1, date, description },
   score,
 }) => {

@@ -11,7 +11,19 @@ const EventList: React.FC<{ data: Fuse.FuseResult<IHistoricalDate>[] }> = ({
     <SimpleGrid columns={{ base: 1, md: 3 }} spacing={10}>
       {data &&
         data.length > 0 &&
-        data.map((result) => <EventCard key={result.item.id} {...result} />)}
+        data.map((result, index) => <EventCard key={index} {...result} />)}
+    </SimpleGrid>
+  </Box>
+);
+
+export const EventMeiliSearchList: React.FC<{ data: IHistoricalDate[] }> = ({
+  data,
+}) => (
+  <Box p={4}>
+    <SimpleGrid columns={{ base: 1, md: 3 }} spacing={10}>
+      {data &&
+        data.length > 0 &&
+        data.map((result, index) => <EventCard key={index} item={result} />)}
     </SimpleGrid>
   </Box>
 );
