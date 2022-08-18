@@ -40,7 +40,7 @@ yarn dev
 
 ## Some comments
 
-There are three diferent tests have done in this repo, the way to access to each of them is appending the route e.g.: localhost:3000/with-serverside. But overall, i think i decided to compare between client-side versus server-side solutions due in my head there is always some point where that decision is relevant. And for the server side, i tried with the most cool implementation that i found that was service based on Rust, sadly i didn't learn more Rust :(.
+Three different tests have been done on this repository, the way to access each of them is to add to the path the route e.g.: `localhost:3000/with-serverside`. Overall, I think I decided to compare between client-side and server-side solutions because, in my head, there's always some point where that decision is relevant. For the server side, I tried with the coolest implementation I found which was a Rust based service, sadly I didn't learn more about Rust :(.
 
 1. `react-use-fuzzy`: Technically, its just react with [Fuse.js](https://fusejs.io/) but through a handy hook called [react-use-fuzzy](https://github.com/joshuatonga/react-use-fuzzy).
 2. `debounced-fuse`: I was not happy with the hook library, so i decided to use directly Fuse.js and also i added some additional hooks to ensure that for example we don't have to do extra calls to the searcher algorithm.
