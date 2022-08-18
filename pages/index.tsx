@@ -24,7 +24,7 @@ type IHistoricalDate = {
   granularity?: string;
 };
 
-const ResultList: React.FC<{ data?: IHistoricalDate[] }> = ({ data }) => (
+const ResultList: React.FC<{ data: IHistoricalDate[] }> = ({ data }) => (
   <>
     {data &&
       data.length > 0 &&
@@ -73,14 +73,14 @@ const Home: NextPage = () => {
       spacing={8}
       justifyContent="center"
       alignItems="flex-start"
-      m="0 auto 4rem auto"
-      maxWidth="700px"
+      m="0 auto 2rem auto"
+      maxWidth="1200px"
     >
       <Flex
         flexDirection="column"
         justifyContent="flex-start"
         alignItems="flex-start"
-        maxWidth="700px"
+        maxWidth="1200px"
       >
         <Heading letterSpacing="tight" mb={2} as="h1" size="2xl">
           react-use-fuzzy
@@ -102,7 +102,7 @@ const Home: NextPage = () => {
         flexDirection="column"
         justifyContent="flex-start"
         alignItems="flex-start"
-        maxWidth="700px"
+        maxWidth="1200px"
         mt={8}
       >
         <Heading letterSpacing="tight" mb={4} size="xl" fontWeight={700}>

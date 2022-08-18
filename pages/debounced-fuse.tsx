@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from "react";
 import type { NextPage } from "next";
 import {
-  Box,
   Heading,
   Text,
   Flex,
@@ -12,18 +11,11 @@ import {
   Icon,
 } from "@chakra-ui/react";
 import Fuse from "fuse.js";
+
 import historicalEvents from "../data/historical_events.json";
 import useDebounce from "../hooks/useDebounce";
-
-type IHistoricalDate = {
-  id: number;
-  date: string;
-  description: string;
-  lang: string;
-  category1?: string;
-  category2?: string;
-  granularity?: string;
-};
+import { IHistoricalDate } from "../types";
+import EventList from "../components/EventList";
 
 const FUSE_OPTIONS: Fuse.IFuseOptions<IHistoricalDate> & {
   includeScore: true;
@@ -31,44 +23,6 @@ const FUSE_OPTIONS: Fuse.IFuseOptions<IHistoricalDate> & {
   includeScore: true,
   keys: ["date", "description", "lang", "category1", "category2"],
 };
-
-const ResultList: React.FC<{ data: Fuse.FuseResult<IHistoricalDate>[] }> = ({
-  data,
-}) => (
-  <>
-    {data &&
-      data.length > 0 &&
-      data.map((result) => <Item key={result.item.id} {...result} />)}
-  </>
-);
-
-const Item: React.FC<Fuse.FuseResult<IHistoricalDate>> = ({
-  item: { category1, date, description },
-  score,
-}) => (
-  <Box mb={8} display="block" width="100%">
-    <Flex
-      width="100%"
-      align="flex-start"
-      justifyContent="space-between"
-      flexDirection={["column", "row"]}
-    >
-      <Heading size="md" as="h3" mb={2} fontWeight="medium">
-        {date}
-      </Heading>
-      <Text
-        color="gray.500"
-        minWidth="105px"
-        textAlign={["left", "right"]}
-        mb={[4, 0]}
-      >
-        {category1}
-      </Text>
-      <Text>{score}</Text>
-    </Flex>
-    <Text>{description}</Text>
-  </Box>
-);
 
 const Home: NextPage = () => {
   const [keyword, setKeyword] = useState<string>("");
@@ -87,14 +41,14 @@ const Home: NextPage = () => {
       spacing={8}
       justifyContent="center"
       alignItems="flex-start"
-      m="0 auto 4rem auto"
-      maxWidth="700px"
+      m="0 auto 2rem auto"
+      maxWidth="1200px"
     >
       <Flex
         flexDirection="column"
         justifyContent="flex-start"
         alignItems="flex-start"
-        maxWidth="700px"
+        maxWidth="1200px"
       >
         <Heading letterSpacing="tight" mb={2} as="h1" size="2xl">
           Fuse.js + debounced keyword
@@ -116,13 +70,13 @@ const Home: NextPage = () => {
         flexDirection="column"
         justifyContent="flex-start"
         alignItems="flex-start"
-        maxWidth="700px"
+        maxWidth="1200px"
         mt={8}
       >
         <Heading letterSpacing="tight" mb={4} size="xl" fontWeight={700}>
           Filtered results
         </Heading>
-        {debouncedSearchTerm && <ResultList data={results} />}
+        {debouncedSearchTerm && <EventList data={results} />}
         {!debouncedSearchTerm && (
           <Text>Please write at least one character to start browsing</Text>
         )}
