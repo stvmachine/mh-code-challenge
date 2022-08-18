@@ -12,49 +12,10 @@ import {
   Icon,
 } from "@chakra-ui/react";
 import { useFuzzy } from "react-use-fuzzy";
+
 import historicalEvents from "../data/historical_events.json";
-
-type IHistoricalDate = {
-  id: number;
-  date: string;
-  description: string;
-  lang: string;
-  category1?: string;
-  category2?: string;
-  granularity?: string;
-};
-
-const ResultList: React.FC<{ data: IHistoricalDate[] }> = ({ data }) => (
-  <>
-    {data &&
-      data.length > 0 &&
-      data.map((item) => <Item key={item.id} {...item} />)}
-  </>
-);
-
-const Item: React.FC<IHistoricalDate> = ({ category1, date, description }) => (
-  <Box mb={8} display="block" width="100%">
-    <Flex
-      width="100%"
-      align="flex-start"
-      justifyContent="space-between"
-      flexDirection={["column", "row"]}
-    >
-      <Heading size="md" as="h3" mb={2} fontWeight="medium">
-        {date}
-      </Heading>
-      <Text
-        color="gray.500"
-        minWidth="105px"
-        textAlign={["left", "right"]}
-        mb={[4, 0]}
-      >
-        {category1}
-      </Text>
-    </Flex>
-    <Text>{description}</Text>
-  </Box>
-);
+import EventList from "../components/EventList";
+import { IHistoricalDate } from "../types";
 
 const Home: NextPage = () => {
   const {
@@ -65,7 +26,8 @@ const Home: NextPage = () => {
     keys: ["date", "description", "lang", "category1", "category2"],
   });
 
-  const result = rawResults.map((e) => e.item || e);
+  // NOTE: Apparently, useFuzzy doesn't clean initially the data and when the search finishes the result includes more params
+  const results = rawResults.map((e: any) => (e?.item ? e : { item: e }));
 
   return (
     <Stack
@@ -85,7 +47,7 @@ const Home: NextPage = () => {
         <Heading letterSpacing="tight" mb={2} as="h1" size="2xl">
           react-use-fuzzy
         </Heading>
-        <Text>{result.length}</Text>
+        <Text>{results.length}</Text>
         <InputGroup my={4} mr={4} w="100%">
           <Input
             aria-label="Search articles"
@@ -108,7 +70,7 @@ const Home: NextPage = () => {
         <Heading letterSpacing="tight" mb={4} size="xl" fontWeight={700}>
           Filtered results
         </Heading>
-        <ResultList data={result} />
+        <EventList data={results} />
       </Flex>
     </Stack>
   );
