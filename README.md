@@ -28,6 +28,10 @@ features, or come up with your own idea...
 
 ## How to use
 
+Nextjs preview: https://mh-code-challenge.vercel.app/
+
+OR
+
 1. Download the repo [or clone it]
 2. Install dependencies and run
 
