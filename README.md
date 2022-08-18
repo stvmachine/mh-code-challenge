@@ -1,34 +1,65 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Why does this repository exist?
 
-## Getting Started
+This is the result of a code challenge that involved the following technologies: ReactJS, NextJS, Chakra-UI, Fuse.js and MeiliSearch. The structure is simple, but it follows good practices from the first commit such as the use of javascript linter (ESLint), the use of typescript, it also shows a clear separation and definition of components, pages, types and hooks.
 
-First, run the development server:
+## Brief: Search History
+
+Build a simple application that allows users to search this JSON data set of historical events.
+
+### Basic Functionality
+
+Users can enter search terms into a text field. Historical events that match the search terms are
+displayed as a list.
+
+- The JSON data can either be embedded into the application or fetched over the network
+- Use of third-party libraries is fine, though of course it’s your own code that we’ll be
+looking at
+
+#### Extra Credit
+
+This is your chance to show us what you can really do! Add one or more of the following
+features, or come up with your own idea...
+
+- Real time update
+- Imperfect matches (e.g. allowing for differences in whitespace, spelling etc.)
+- Auto-complete
+- Ordering results by quality of match
+- ...or any other cool feature you can think of
+
+## How to use
+
+1. Download the repo [or clone it]
+2. Install dependencies and run
 
 ```bash
-npm run dev
-# or
+yarn
 yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## Some comments
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+There are three diferent tests have done in this repo, the way to access to each of them is appending the route e.g.: localhost:3000/with-serverside. But overall, i think i decided to compare between client-side versus server-side solutions due in my head there is always some point where that decision is relevant. And for the server side, i tried with the most cool implementation that i found that was service based on Rust, sadly i didn't learn more Rust :(.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+1. `react-use-fuzzy`: Technically, its just react with [Fuse.js](https://fusejs.io/) but through a handy hook called [react-use-fuzzy](https://github.com/joshuatonga/react-use-fuzzy).
+2. `debounced-fuse`: I was not happy with the hook library, so i decided to use directly Fuse.js and also i added some additional hooks to ensure that for example we don't have to do extra calls to the searcher algorithm.
+3. `with-serverside`: The option 1 and 2 are client-side, so in this case i decided to try server-side. There are multiple options as the popular `Elastic search` but i decided to try a solution based on Rust called [MeiliSearch](https://www.meilisearch.com/).
 
-## Learn More
+The docs are really useful and I ended creating a cloud instance with the data, so basically I'm query against that instance:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+QUERY_URL=https://meilisearch-production-f61d.up.railway.app/
+API_KEY= StrongKeyIncluding123
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+You can hit the query url in the browser and its going to display some kind of preview website, you would need the API_KEY to do queries though.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Aditional thoughts
 
-## Deploy on Vercel
+1. I was thinking of this idea of use synonyms through Tensorflow. I did something like that a while ago but it would be interesting to run it in a different area. More info about that work:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+    - <https://www.commoncode.io/blog/kaggle-covid-challenge>
+    - <https://www.kaggle.com/code/estebancampos/covid-19-scientific-papers-with-doc2vec/notebook>
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+2. The other idea that i have is just play with different algorithms to understand what they normally do and try to tweak them a bit just for fun.

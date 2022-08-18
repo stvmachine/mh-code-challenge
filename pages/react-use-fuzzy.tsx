@@ -26,7 +26,7 @@ const Home: NextPage = () => {
     keys: ["date", "description", "lang", "category1", "category2"],
   });
 
-  // NOTE: Apparently, useFuzzy doesn't clean initially the data and when the search finishes the result includes more params
+  // NOTE: useFuzzy initially just return the initial data that doesn't have the same type than the result
   const results = rawResults.map((e: any) => (e?.item ? e : { item: e }));
 
   return (
