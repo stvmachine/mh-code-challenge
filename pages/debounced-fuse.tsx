@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
 import type { NextPage } from "next";
 import {
   Box,
@@ -11,8 +11,9 @@ import {
   InputRightElement,
   Icon,
 } from "@chakra-ui/react";
-import { useFuzzy } from "react-use-fuzzy";
+import Fuse from "fuse.js";
 import historicalEvents from "../data/historical_events.json";
+import useDebounce from "../hooks/useDebounce";
 
 type IHistoricalDate = {
   id: number;
@@ -24,15 +25,27 @@ type IHistoricalDate = {
   granularity?: string;
 };
 
-const ResultList: React.FC<{ data?: IHistoricalDate[] }> = ({ data }) => (
+const FUSE_OPTIONS: Fuse.IFuseOptions<IHistoricalDate> & {
+  includeScore: true;
+} = {
+  includeScore: true,
+  keys: ["date", "description", "lang", "category1", "category2"],
+};
+
+const ResultList: React.FC<{ data: Fuse.FuseResult<IHistoricalDate>[] }> = ({
+  data,
+}) => (
   <>
     {data &&
       data.length > 0 &&
-      data.map((item) => <Item key={item.id} {...item} />)}
+      data.map((result) => <Item key={result.item.id} {...result} />)}
   </>
 );
 
-const Item: React.FC<IHistoricalDate> = ({ category1, date, description }) => (
+const Item: React.FC<Fuse.FuseResult<IHistoricalDate>> = ({
+  item: { category1, date, description },
+  score,
+}) => (
   <Box mb={8} display="block" width="100%">
     <Flex
       width="100%"
@@ -51,21 +64,22 @@ const Item: React.FC<IHistoricalDate> = ({ category1, date, description }) => (
       >
         {category1}
       </Text>
+      <Text>{score}</Text>
     </Flex>
     <Text>{description}</Text>
   </Box>
 );
 
 const Home: NextPage = () => {
-  const {
-    result: rawResults,
-    keyword,
-    search,
-  } = useFuzzy<IHistoricalDate>(historicalEvents, {
-    keys: ["date", "description", "lang", "category1", "category2"],
-  });
+  const [keyword, setKeyword] = useState<string>("");
+  const debouncedSearchTerm = useDebounce(keyword, 500);
 
-  const result = rawResults.map((e) => e.item || e);
+  const searcher = useMemo(() => new Fuse(historicalEvents, FUSE_OPTIONS), []);
+
+  const results: Fuse.FuseResult<IHistoricalDate>[] = useMemo(
+    () => searcher.search(debouncedSearchTerm),
+    [debouncedSearchTerm, searcher]
+  );
 
   return (
     <Stack
@@ -83,13 +97,13 @@ const Home: NextPage = () => {
         maxWidth="700px"
       >
         <Heading letterSpacing="tight" mb={2} as="h1" size="2xl">
-          react-use-fuzzy
+          Fuse.js + debounced keyword
         </Heading>
-        <Text>{result.length}</Text>
+        <Text>{results.length}</Text>
         <InputGroup my={4} mr={4} w="100%">
           <Input
             aria-label="Search articles"
-            onChange={(e) => search(e.target.value)}
+            onChange={(e) => setKeyword(e.target.value)}
             placeholder="Search articles"
             value={keyword}
           />
@@ -108,7 +122,10 @@ const Home: NextPage = () => {
         <Heading letterSpacing="tight" mb={4} size="xl" fontWeight={700}>
           Filtered results
         </Heading>
-        <ResultList data={result} />
+        {debouncedSearchTerm && <ResultList data={results} />}
+        {!debouncedSearchTerm && (
+          <Text>Please write at least one character to start browsing</Text>
+        )}
       </Flex>
     </Stack>
   );
