@@ -74,8 +74,13 @@ describe("#testInvertedIndex", () => {
     expect(results).toEqual([1]);
   });
 
+  // TODO: Create test to decide what to do when a query word doesn't have a match.
+  // For now, it just being ignored
   xtest("with multiple partial and existing matches and non existing match", () => {
     const results = testInvertedIndex(invertedIndex, "cae luc xxx");
     expect(results).toEqual([]);
   });
+
+  // TODO: Create test using a bigger subset that include at least two matches for the same query
+  xtest("with multiple matches to the same word", () => {});
 });

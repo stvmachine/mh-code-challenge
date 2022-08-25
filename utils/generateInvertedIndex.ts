@@ -54,40 +54,46 @@ export const testInvertedIndex = (
   let results: number[] = [];
   let matches = 0;
 
-  searchText.split(" ").forEach((token) => {
-    // check if the token is an actual key in the dictionary
-    if (invertedIndex[token]) {
-      // first match, add all the documents
-      if (matches === 0) {
-        results = results.concat(invertedIndex[token]);
-      } else {
-        // remove from the results, documents that are not considered in new iterations
-        results = results.filter((result) =>
-          invertedIndex[token].includes(result)
-        );
+  searchText
+    .replace(/[^\w\s_]/g, " ")
+    .replace(/\s+/g, " ")
+    .toLowerCase()
+    .split(" ")
+    .filter((w) => w)
+    .forEach((token) => {
+      // check if the token is an actual key in the dictionary
+      if (invertedIndex[token]) {
+        // first match, add all the documents
+        if (matches === 0) {
+          results = results.concat(invertedIndex[token]);
+        } else {
+          // remove from the results, documents that are not considered in new iterations
+          results = results.filter((result) =>
+            invertedIndex[token].includes(result)
+          );
+        }
+
+        // increase the number of matches
+        matches++;
       }
 
-      // increase the number of matches
-      matches++;
-    }
+      // regex match
+      else {
+        Object.keys(invertedIndex).forEach((ivKey) => {
+          if (ivKey.match(token) !== null) {
+            if (matches === 0) {
+              results = results.concat(invertedIndex[ivKey]);
+            } else {
+              results = results.filter((result) =>
+                invertedIndex[ivKey].includes(result)
+              );
+            }
 
-    // regex match
-    else {
-      Object.keys(invertedIndex).forEach((ivKey) => {
-        if (ivKey.match(token) !== null) {
-          if (matches === 0) {
-            results = results.concat(invertedIndex[ivKey]);
-          } else {
-            results = results.filter((result) =>
-              invertedIndex[ivKey].includes(result)
-            );
+            matches++;
           }
-
-          matches++;
-        }
-      });
-    }
-  });
+        });
+      }
+    });
 
   return results;
 };
