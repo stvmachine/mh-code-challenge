@@ -6,14 +6,18 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "jest --watch"
   },
   "dependencies": {
     "@chakra-ui/react": "^2.2.8",
     "@emotion/react": "^11.10.0",
     "@emotion/styled": "^11.10.0",
+    "@types/jest": "^28.1.7",
+    "babel-jest": "^28.1.3",
     "framer-motion": "^7.2.0",
     "fuse.js": "^6.6.2",
+    "jest": "^28.1.3",
     "meilisearch": "^0.27.0",
     "next": "12.2.5",
     "react": "18.2.0",
