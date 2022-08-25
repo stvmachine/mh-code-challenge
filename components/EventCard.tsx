@@ -3,7 +3,7 @@ import { Box, Heading, Text, Stack } from "@chakra-ui/react";
 import { IHistoricalDate } from "../types";
 
 const EventCard: React.FC<{ item: IHistoricalDate; score?: number }> = ({
-  item: { category1, date, description },
+  item: { id, category1, date, description },
   score,
 }) => {
   return (
@@ -23,11 +23,21 @@ const EventCard: React.FC<{ item: IHistoricalDate; score?: number }> = ({
           fontSize={"sm"}
           letterSpacing={1.1}
         >
-          {date}
+          Id: {id}
         </Text>
-        <Heading fontSize={"2xl"} fontFamily={"body"}>
-          Score: {score}
-        </Heading>
+        <Text
+          textTransform={"uppercase"}
+          fontWeight={800}
+          fontSize={"sm"}
+          letterSpacing={1.1}
+        >
+          Date: {date}
+        </Text>
+        {score && (
+          <Heading fontSize={"2xl"} fontFamily={"body"}>
+            Score: {score}
+          </Heading>
+        )}
         <Text color={"gray.500"}>{description}</Text>
       </Stack>
     </Box>

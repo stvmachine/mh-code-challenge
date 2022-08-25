@@ -54,7 +54,7 @@ export const testInvertedIndex = (
   let results: number[] = [];
   let matches = 0;
 
-  searchText.split(" ").forEach((token, i) => {
+  searchText.split(" ").forEach((token) => {
     // check if the token is an actual key in the dictionary
     if (invertedIndex[token]) {
       // first match, add all the documents
@@ -73,13 +73,13 @@ export const testInvertedIndex = (
 
     // regex match
     else {
-      Object.keys(invertedIndex).forEach((iv) => {
-        if (iv.match(token) !== null) {
+      Object.keys(invertedIndex).forEach((ivKey) => {
+        if (ivKey.match(token) !== null) {
           if (matches === 0) {
-            results = results.concat(invertedIndex[iv]);
+            results = results.concat(invertedIndex[ivKey]);
           } else {
             results = results.filter((result) =>
-              invertedIndex[iv].includes(result)
+              invertedIndex[ivKey].includes(result)
             );
           }
 

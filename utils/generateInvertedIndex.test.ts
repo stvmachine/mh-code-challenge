@@ -73,4 +73,9 @@ describe("#testInvertedIndex", () => {
     const results = testInvertedIndex(invertedIndex, "cae luc");
     expect(results).toEqual([1]);
   });
+
+  xtest("with multiple partial and existing matches and non existing match", () => {
+    const results = testInvertedIndex(invertedIndex, "cae luc xxx");
+    expect(results).toEqual([]);
+  });
 });

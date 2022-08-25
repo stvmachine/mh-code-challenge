@@ -1,44 +1,39 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { NextPage } from "next";
-import { MeiliSearch } from "meilisearch";
+import React, { useMemo, useState } from "react";
+import type { NextPage } from "next";
 import {
-  Flex,
-  Text,
   Heading,
-  Icon,
+  Text,
+  Flex,
+  Stack,
   Input,
   InputGroup,
   InputRightElement,
-  Stack,
+  Icon,
 } from "@chakra-ui/react";
 
+import historicalEvents from "../data/historical_events.json";
 import useDebounce from "../hooks/useDebounce";
+import { IHistoricalDate } from "../types";
 import { EventGenericTypeList } from "../components/EventList";
+import {
+  generateInvertedIndex,
+  testInvertedIndex,
+} from "../utils/generateInvertedIndex";
 
-const client = new MeiliSearch({
-  host: "https://meilisearch-production-f61d.up.railway.app/",
-  apiKey: "StrongKeyIncluding123",
-});
-
-const WithServerside: NextPage = () => {
-  const [keyword, setKeyword] = useState<string>("");
-  const [results, setResults] = useState<any>([]);
+const Home: NextPage = () => {
+  const [keyword, setKeyword] = useState<string>("caesar");
   const debouncedSearchTerm = useDebounce(keyword, 500);
-  const historicalEventsIndex = useMemo(
-    () => client.index("historical_events"),
+
+  const invertedIndex = useMemo(
+    () => generateInvertedIndex(historicalEvents),
     []
   );
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await historicalEventsIndex.search(debouncedSearchTerm, {
-        limit: 1000,
-      });
-      setResults(data);
-    };
-
-    fetchData();
-  }, [debouncedSearchTerm, historicalEventsIndex]);
+  const results: IHistoricalDate[] = useMemo(() => {
+    const matches = testInvertedIndex(invertedIndex, debouncedSearchTerm);
+    console.log(invertedIndex, debouncedSearchTerm, matches);
+    return historicalEvents.filter((he) => matches.includes(he.id));
+  }, [debouncedSearchTerm, invertedIndex]);
 
   return (
     <Stack
@@ -56,11 +51,9 @@ const WithServerside: NextPage = () => {
         maxWidth="1200px"
       >
         <Heading letterSpacing="tight" mb={2} as="h1" size="2xl">
-          Meilisearch + debounced keyword
+          Custom search
         </Heading>
-        <Text>
-          {results?.hits?.length ?? 0} found in {results?.processingTimeMs} ms
-        </Text>
+        <Text>Results found: {results.length}</Text>
         <InputGroup my={4} mr={4} w="100%">
           <Input
             aria-label="Search articles"
@@ -83,10 +76,13 @@ const WithServerside: NextPage = () => {
         <Heading letterSpacing="tight" mb={4} size="xl" fontWeight={700}>
           Filtered results
         </Heading>
-        <EventGenericTypeList data={results.hits} />
+        {debouncedSearchTerm && <EventGenericTypeList data={results} />}
+        {!debouncedSearchTerm && (
+          <Text>Please write at least one character to start browsing</Text>
+        )}
       </Flex>
     </Stack>
   );
 };
 
-export default WithServerside;
+export default Home;

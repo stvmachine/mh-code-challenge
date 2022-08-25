@@ -53,7 +53,7 @@ const Home: NextPage = () => {
         <Heading letterSpacing="tight" mb={2} as="h1" size="2xl">
           Fuse.js + debounced keyword
         </Heading>
-        <Text>{results.length}</Text>
+        <Text>Results found: {results.length}</Text>
         <InputGroup my={4} mr={4} w="100%">
           <Input
             aria-label="Search articles"
