@@ -1,7 +1,10 @@
 import { IHistoricalDate } from "../types";
+import { eng as stopWordsEng } from "./stopwords_eng";
+
+type IInvertedIndex = Record<string, number[]>;
 
 export const generateInvertedIndex = (data: IHistoricalDate[]) => {
-  const invertedIndex: Record<string, number[]> = {};
+  const invertedIndex: IInvertedIndex = {};
   // e.g. { 'caesar': [ 1 , 2 ], 'julius: [3] }
 
   data.forEach((item) => {
@@ -14,13 +17,15 @@ export const generateInvertedIndex = (data: IHistoricalDate[]) => {
 
     const words: string[] = description
       // remove any character that is not alphanumeric or whitespace
-      .replace(/[^\w\s_]/g, "")
+      .replace(/[^\w\s_]/g, " ")
       //replace double white space for single space
       .replace(/\s+/g, " ")
       // lets convert to lowercase
       .toLowerCase()
       //hopefully, splitting individual words
-      .split(" ");
+      .split(" ")
+      // filter by stopwords
+      .filter((w) => w && !stopWordsEng.includes(w));
 
     // iterate over words to populate the index
     words.forEach((word) => {
@@ -43,23 +48,22 @@ export const generateInvertedIndex = (data: IHistoricalDate[]) => {
 };
 
 export const testInvertedIndex = (
-  data: IHistoricalDate[],
+  invertedIndex: IInvertedIndex,
   searchText: string
 ) => {
-  const invertedIndex = generateInvertedIndex(data);
-
   let results: number[] = [];
   let matches = 0;
 
-  searchText.split(/" "/g).forEach((st) => {
-    if (invertedIndex[st]) {
+  searchText.split(" ").forEach((token, i) => {
+    // check if the token is an actual key in the dictionary
+    if (invertedIndex[token]) {
       // first match, add all the documents
       if (matches === 0) {
-        results.concat(invertedIndex[st]);
+        results = results.concat(invertedIndex[token]);
       } else {
         // remove from the results, documents that are not considered in new iterations
         results = results.filter((result) =>
-          invertedIndex[st].includes(result)
+          invertedIndex[token].includes(result)
         );
       }
 
@@ -69,19 +73,19 @@ export const testInvertedIndex = (
 
     // regex match
     else {
-      // first match, add all the documents
-      if (matches === 0) {
-        results.concat(invertedIndex[st]);
-      }
-
       Object.keys(invertedIndex).forEach((iv) => {
-        if (iv.match(searchText) !== null) {
-          results.filter((result) => invertedIndex[st].includes(result));
+        if (iv.match(token) !== null) {
+          if (matches === 0) {
+            results = results.concat(invertedIndex[iv]);
+          } else {
+            results = results.filter((result) =>
+              invertedIndex[iv].includes(result)
+            );
+          }
+
+          matches++;
         }
       });
-
-      // increase the number of matches
-      matches++;
     }
   });
 
