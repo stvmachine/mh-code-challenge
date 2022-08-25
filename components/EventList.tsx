@@ -16,7 +16,7 @@ const EventList: React.FC<{ data: Fuse.FuseResult<IHistoricalDate>[] }> = ({
   </Box>
 );
 
-export const EventMeiliSearchList: React.FC<{ data: IHistoricalDate[] }> = ({
+export const EventGenericTypeList: React.FC<{ data: IHistoricalDate[] }> = ({
   data,
 }) => (
   <Box p={4}>
